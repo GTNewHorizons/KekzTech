@@ -238,7 +238,7 @@ public class GTMTE_LapotronicSuperCapacitor extends GT_MetaTileEntity_EnhancedMu
 				.addInfo("purposes of passive loss calculation. The full capacity is counted towards the actual power capacity.")
 				.addSeparator()
 				.addInfo("Glass shell has to be Tier - 3 of the highest capacitor tier")
-				.addInfo("UV-tier glass required for TecTech Laser Hatches")
+				.addInfo("LuV-tier glass required for TecTech Laser Hatches")
 				.addInfo("Add more or better capacitors to increase capacity")
 				.addSeparator()
 				.beginVariableStructureBlock(5, 5, 4, 18, 5, 5, false)
@@ -329,8 +329,8 @@ public class GTMTE_LapotronicSuperCapacitor extends GT_MetaTileEntity_EnhancedMu
 			}
 		}
 
-		// Glass has to be at least UV-tier to allow TT Laser hatches
-		if (glasTier < 8) {
+		// Glass has to be at least LuV-tier to allow TT Laser hatches
+		if (glasTier < 6) {
 			if(mEnergyTunnelsTT.size() > 0 || mDynamoTunnelsTT.size() > 0)
 				return false;
 		}
