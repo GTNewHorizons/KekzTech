@@ -909,9 +909,8 @@ public class GTMTE_LapotronicSuperCapacitor extends
 
         final ArrayList<String> ll = new ArrayList<>();
         ll.add(EnumChatFormatting.YELLOW + "Operational Data:" + EnumChatFormatting.RESET);
-        ll.add("Used Capacity: " + nf.format(stored) + "EU");
-        ll.add("Used Capacity: " + toPercentageFrom(stored, capacity, 6) + "%");
-        ll.add("Used Capacity: " + toStandardForm(stored) + "EU");
+        ll.add("EU Stored: " + nf.format(stored) + "EU (" + toStandardForm(stored) + ")");
+        ll.add("Used Capacity: " + toPercentageFrom(stored, capacity));
         ll.add("Total Capacity: " + nf.format(capacity) + "EU");
         ll.add("Total Capacity: " + toStandardForm(capacity) + "EU");
         ll.add("Passive Loss: " + nf.format(passiveDischargeAmount) + "EU/t");
