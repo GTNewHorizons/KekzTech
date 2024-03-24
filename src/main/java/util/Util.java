@@ -18,6 +18,17 @@ import common.items.ErrorItem;
 
 public class Util {
 
+    protected static final DecimalFormat percentFormatRound_6 = new DecimalFormat("0.000000%");
+    protected static final DecimalFormat percentFormatRound_2 = new DecimalFormat("0.00%");
+    protected static final BigDecimal Threshold_1 = BigDecimal.valueOf(0.01);
+    protected static DecimalFormat standardFormat;
+
+    static {
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
+        dfs.setExponentSeparator("x10^");
+        standardFormat = new DecimalFormat("0.00E0", dfs);
+    }
+
     public static ItemStack getStackofAmountFromOreDict(String oredictName, final int amount) {
         final ArrayList<ItemStack> list = OreDictionary.getOres(oredictName);
         if (!list.isEmpty()) {
@@ -59,10 +70,10 @@ public class Util {
     public static String toPercentageFrom(BigInteger value, BigInteger maxValue) {
         BigDecimal result = new BigDecimal(value).setScale(6, RoundingMode.HALF_UP)
                 .divide(new BigDecimal(maxValue), RoundingMode.HALF_UP);
-        if (result.compareTo(BigDecimal.valueOf(0.01)) < 0) {
-            return new DecimalFormat("0.000000%").format(result);
+        if (result.compareTo(Threshold_1) < 0) {
+            return percentFormatRound_6.format(result);
         } else {
-            return new DecimalFormat("0.00%").format(result);
+            return percentFormatRound_2.format(result);
         }
     }
 
@@ -72,11 +83,7 @@ public class Util {
             return "0";
         }
 
-        DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
-        dfs.setExponentSeparator("x10^");
-        DecimalFormat format = new DecimalFormat("0.00E0", dfs);
-
-        return format.format(number);
+        return standardFormat.format(number);
     }
 
 }
