@@ -1,6 +1,6 @@
 package exceptions;
 
-public class DivideByZeroException extends Exception {
+public class DivideByZeroException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
   
