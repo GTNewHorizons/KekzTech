@@ -902,7 +902,7 @@ public class GTMTE_LapotronicSuperCapacitor extends
     }
 
     @Override
-    public String[] getInfoData() {
+    public String[] getInfoData() throws DivideByZeroException {
         NumberFormat nf = NumberFormat.getNumberInstance();
         int secInterval = DURATION_AVERAGE_TICKS / 20;
 
@@ -923,58 +923,66 @@ public class GTMTE_LapotronicSuperCapacitor extends
         ll.add("Avg EU IN: " + nf.format(avgIn) + " (last " + secInterval + " seconds)");
         ll.add("Avg EU OUT: " + nf.format(avgOut) + " (last " + secInterval + " seconds)");
 
-        // Check if the system is charging or discharging
-        if (avgIn > avgOut) {
-            // Calculate time to full if charging
-            if (avgIn != 0) {
-                double timeToFull = (capacity.longValue() - stored.longValue()) / avgIn / 20;
-                String timeToFullString = formatTime(timeToFull);
-                ll.add("Time to Full: " + timeToFullString);
+        // Check avgIn and avgOut for being Zero beforehand to avoid a division by zero error
+        try {
+            if (avgIn != 0 | avgOut != 0) {
+                // Check if the system is charging or discharging
+                if (avgIn > avgOut) {
+                    // Calculate time to full if charging
+                    if (avgIn != 0) {
+                        double timeToFull = (capacity.longValue() - stored.longValue()) / avgIn / 20;
+    	                String timeToFullString = formatTime(timeToFull);
+                        ll.add("Time to Full: " + timeToFullString);
+                    } else {
+                        // Calculate time to empty if discharging
+                        if (avgOut != 0) {
+                            double timeToEmpty = stored.longValue() / avgOut / 20;
+                            String timeToEmptyString = formatTime(timeToEmpty);
+                            ll.add("Time to Empty: " + timeToEmptyString);
+                        }
+                    }
+                }
+            } else {
+                throw new DivideByZeroException("Division by zero is undifined!");
             }
-        } else {
-            // Calculate time to empty if discharging
-            if (avgOut != 0) {
-                double timeToEmpty = stored.longValue() / avgOut / 20;
-                String timeToEmptyString = formatTime(timeToEmpty);
-                ll.add("Time to Empty: " + timeToEmptyString);
-            }
+        } catch (DivideByZeroException e) {
+            System.err.print(e.getMessage());
         }
         ll.add(
-                "Maintenance Status: " + ((super.getRepairStatus() == super.getIdealStatus())
-                        ? EnumChatFormatting.GREEN + "Working perfectly" + EnumChatFormatting.RESET
-                        : EnumChatFormatting.RED + "Has Problems" + EnumChatFormatting.RESET));
+            "Maintenance Status: " + ((super.getRepairStatus() == super.getIdealStatus())
+                ? EnumChatFormatting.GREEN + "Working perfectly" + EnumChatFormatting.RESET
+                : EnumChatFormatting.RED + "Has Problems" + EnumChatFormatting.RESET));
         ll.add(
-                "Wireless mode: " + (wireless_mode ? EnumChatFormatting.GREEN + "enabled" + EnumChatFormatting.RESET
-                        : EnumChatFormatting.RED + "disabled" + EnumChatFormatting.RESET));
+            "Wireless mode: " + (wireless_mode ? EnumChatFormatting.GREEN + "enabled" + EnumChatFormatting.RESET
+                : EnumChatFormatting.RED + "disabled" + EnumChatFormatting.RESET));
         ll.add(
-                GT_Values.TIER_COLORS[9] + GT_Values.VN[9]
-                        + EnumChatFormatting.RESET
-                        + " Capacitors detected: "
-                        + getUHVCapacitorCount());
+            GT_Values.TIER_COLORS[9] + GT_Values.VN[9]
+                + EnumChatFormatting.RESET
+                + " Capacitors detected: "
+                + getUHVCapacitorCount());
         ll.add(
-                GT_Values.TIER_COLORS[10] + GT_Values.VN[10]
-                        + EnumChatFormatting.RESET
-                        + " Capacitors detected: "
-                        + getUEVCapacitorCount());
+            GT_Values.TIER_COLORS[10] + GT_Values.VN[10]
+                + EnumChatFormatting.RESET
+                + " Capacitors detected: "
+                + getUEVCapacitorCount());
         ll.add(
-                GT_Values.TIER_COLORS[11] + GT_Values.VN[11]
-                        + EnumChatFormatting.RESET
-                        + " Capacitors detected: "
-                        + getUIVCapacitorCount());
+            GT_Values.TIER_COLORS[11] + GT_Values.VN[11]
+                + EnumChatFormatting.RESET
+                + " Capacitors detected: "
+                + getUIVCapacitorCount());
         ll.add(
-                GT_Values.TIER_COLORS[12] + GT_Values.VN[12]
-                        + EnumChatFormatting.RESET
-                        + " Capacitors detected: "
-                        + getUMVCapacitorCount());
+            GT_Values.TIER_COLORS[12] + GT_Values.VN[12]
+                + EnumChatFormatting.RESET
+                + " Capacitors detected: "
+                + getUMVCapacitorCount());
         ll.add(
-                "Total wireless EU: " + EnumChatFormatting.RED
-                        + nf.format(WirelessNetworkManager.getUserEU(global_energy_user_uuid))
-                        + " EU");
+            "Total wireless EU: " + EnumChatFormatting.RED
+                + nf.format(WirelessNetworkManager.getUserEU(global_energy_user_uuid))
+                + " EU");
         ll.add(
-                "Total wireless EU: " + EnumChatFormatting.RED
-                        + toStandardForm(WirelessNetworkManager.getUserEU(global_energy_user_uuid))
-                        + " EU");
-
+            "Total wireless EU: " + EnumChatFormatting.RED
+                + toStandardForm(WirelessNetworkManager.getUserEU(global_energy_user_uuid))
+                + " EU");
         final String[] a = new String[ll.size()];
         return ll.toArray(a);
     }
