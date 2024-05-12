@@ -902,7 +902,7 @@ public class GTMTE_LapotronicSuperCapacitor extends
     }
 
     @Override
-    public String[] getInfoData() throws DivideByZeroException {
+    public String[] getInfoData() {
         NumberFormat nf = NumberFormat.getNumberInstance();
         int secInterval = DURATION_AVERAGE_TICKS / 20;
 
@@ -931,25 +931,23 @@ public class GTMTE_LapotronicSuperCapacitor extends
                     double timeToFull = (capacity.longValue() - stored.longValue()) / avgIn / 20;
     	            String timeToFullString = formatTime(timeToFull);
                     ll.add("Time to Full: " + timeToFullString);
-                } else {
-                    throw new DivideByZeroException("Division by zero is undifined!");
-                        // Calculate time to empty if discharging
-                        try {
-                            if (avgOut != 0) {
-                                double timeToEmpty = stored.longValue() / avgOut / 20;
-                                String timeToEmptyString = formatTime(timeToEmpty);
-                                ll.add("Time to Empty: " + timeToEmptyString);
-                            } else {
-                                throw new DivideByZeroException("Division by zero is undifined!");
-                                }
-                        } catch (DivideByZeroException e) {
-                            System.err.print(e.getMessage());
-                            }
-                    }
+                } throw new DivideByZeroException("avgIn: Division by zero is undifined!");
             } catch (DivideByZeroException e) {
                 System.err.print(e.getMessage());
                 }
-        } 
+        } else { 
+            // In case of a discharging LSC
+            // Calculate time to empty if discharging
+            try {
+                if (avgOut != 0) {
+                    double timeToEmpty = stored.longValue() / avgOut / 20;
+                    String timeToEmptyString = formatTime(timeToEmpty);
+                    ll.add("Time to Empty: " + timeToEmptyString);
+                } throw new DivideByZeroException("avgOut: Division by zero is undifined!");
+            } catch (DivideByZeroException e) {
+                System.err.print(e.getMessage());
+                }            
+        }
         ll.add(
             "Maintenance Status: " + ((super.getRepairStatus() == super.getIdealStatus())
                 ? EnumChatFormatting.GREEN + "Working perfectly" + EnumChatFormatting.RESET
